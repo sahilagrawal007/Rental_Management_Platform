@@ -1,21 +1,8 @@
-// utils/availabilityChecker.js
-// This prevents double-booking by checking inventory availability
-
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-/**
- * Check if product is available for given dates and quantity
- * This is the CORE logic that prevents double-booking
- *
- * @param {String} productId - Product UUID
- * @param {Date} startDate - Rental start date
- * @param {Date} endDate - Rental end date
- * @param {Number} quantity - Requested quantity
- * @returns {Object} - Availability status and details
- */
 async function checkProductAvailability(productId, startDate, endDate, quantity) {
-  // Step 1: Get product details
+
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: {
@@ -39,7 +26,7 @@ async function checkProductAvailability(productId, startDate, endDate, quantity)
   const overlappingReservations = await prisma.inventoryReservation.findMany({
     where: {
       productId: productId,
-      status: { in: ["RESERVED", "ACTIVE"] }, // Only active reservations
+      status: { in: ["RESERVED", "ACTIVE"] },
       OR: [
         // Case 1: Existing reservation starts during our rental period
         {
@@ -57,16 +44,13 @@ async function checkProductAvailability(productId, startDate, endDate, quantity)
     },
   });
 
-  // Step 3: Calculate total reserved quantity
   const reservedQuantity = overlappingReservations.reduce(
     (sum, reservation) => sum + reservation.quantity,
     0,
   );
 
-  // Step 4: Calculate available quantity
   const availableQuantity = product.quantityOnHand - reservedQuantity;
 
-  // Step 5: Return availability status
   return {
     isAvailable: availableQuantity >= quantity,
     availableQuantity: availableQuantity,
@@ -77,11 +61,7 @@ async function checkProductAvailability(productId, startDate, endDate, quantity)
   };
 }
 
-/**
- * Get all reservations for a product (for displaying calendar)
- * @param {String} productId - Product UUID
- * @returns {Array} - List of reservations
- */
+
 async function getProductReservations(productId) {
   const reservations = await prisma.inventoryReservation.findMany({
     where: {

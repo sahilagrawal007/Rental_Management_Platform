@@ -1,6 +1,3 @@
-// routes/products.js
-// All product-related API endpoints
-
 const express = require("express");
 const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
@@ -13,30 +10,23 @@ const {
 
 const prisma = new PrismaClient();
 
-// ==================== PUBLIC ROUTES (No auth needed) ====================
+// Get all published products
 
-/**
- * GET /api/products
- * Get all published products (public - for customers to browse)
- */
 router.get("/", async (req, res) => {
   try {
     const { search, minPrice, maxPrice } = req.query;
 
-    // Build filter conditions
     const whereConditions = {
-      isPublished: true, // Only show published products
+      isPublished: true,
     };
 
-    // Add search filter if provided
     if (search) {
       whereConditions.name = {
         contains: search,
-        mode: "insensitive", // Case-insensitive search
+        mode: "insensitive",
       };
     }
 
-    // Add price filters if provided
     if (minPrice) {
       whereConditions.pricePerDay = {
         ...whereConditions.pricePerDay,
@@ -51,7 +41,6 @@ router.get("/", async (req, res) => {
       };
     }
 
-    // Fetch products from database
     const products = await prisma.product.findMany({
       where: whereConditions,
       include: {
@@ -63,7 +52,7 @@ router.get("/", async (req, res) => {
         },
       },
       orderBy: {
-        createdAt: "desc", // Newest first
+        createdAt: "desc",
       },
     });
 
@@ -74,10 +63,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-/**
- * GET /api/products/:id
- * Get single product details by ID
- */
+// GET /api/products/:id
+
 router.get("/:id", async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
@@ -107,21 +94,18 @@ router.get("/:id", async (req, res) => {
 /**
  * POST /api/products/:id/check-availability
  * Check if product is available for given dates and quantity
- * This is the KEY endpoint that prevents double-booking
  */
 router.post("/:id/check-availability", async (req, res) => {
   try {
     const { startDate, endDate, quantity } = req.body;
     const productId = req.params.id;
 
-    // Validate inputs
     if (!startDate || !endDate || !quantity) {
       return res.status(400).json({
         error: "Missing required fields: startDate, endDate, quantity",
       });
     }
 
-    // Check if dates are valid
     const start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -137,10 +121,8 @@ router.post("/:id/check-availability", async (req, res) => {
       });
     }
 
-    // Check availability
     const availability = await checkProductAvailability(productId, startDate, endDate, quantity);
 
-    // Also calculate price for this rental period
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });
@@ -176,10 +158,7 @@ router.get("/:id/reservations", async (req, res) => {
   }
 });
 
-// ==================== VENDOR ROUTES (Auth + Vendor role needed) ====================
-
 /**
- * GET /api/products/vendor/my-products
  * Get all products created by logged-in vendor
  */
 router.get(
@@ -201,33 +180,29 @@ router.get(
   },
 );
 
-/**
- * POST /api/products
- * Create new rental product (Vendor only)
- */
+
+// Create new rental product (Vendor only)
+
 router.post("/", authMiddleware, checkRole("VENDOR", "ADMIN"), async (req, res) => {
   try {
     const { name, description, quantityOnHand, pricePerHour, pricePerDay, pricePerWeek, imageUrl } =
       req.body;
 
-    // Validate required fields
     if (!name || !quantityOnHand) {
       return res.status(400).json({
         error: "Name and quantity are required",
       });
     }
 
-    // At least one price must be provided
     if (!pricePerHour && !pricePerDay && !pricePerWeek) {
       return res.status(400).json({
         error: "At least one price (hour/day/week) must be provided",
       });
     }
 
-    // Create product
     const product = await prisma.product.create({
       data: {
-        vendorId: req.userId, // Logged-in vendor's ID
+        vendorId: req.userId,
         name,
         description,
         quantityOnHand: parseInt(quantityOnHand),
@@ -235,7 +210,7 @@ router.post("/", authMiddleware, checkRole("VENDOR", "ADMIN"), async (req, res) 
         pricePerDay: pricePerDay ? parseFloat(pricePerDay) : null,
         pricePerWeek: pricePerWeek ? parseFloat(pricePerWeek) : null,
         imageUrl,
-        isPublished: false, // Unpublished by default
+        isPublished: false,
       },
     });
 
@@ -266,7 +241,6 @@ router.put("/:id", authMiddleware, checkRole("VENDOR", "ADMIN"), async (req, res
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // Check ownership (unless admin)
     if (req.userRole !== "ADMIN" && existingProduct.vendorId !== req.userId) {
       return res.status(403).json({ error: "You can only update your own products" });
     }

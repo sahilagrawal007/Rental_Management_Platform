@@ -4,11 +4,9 @@ const cors = require("cors");
 
 const app = express();
 
-// Middleware - these run before your routes
-app.use(cors()); // Allows frontend to connect
-app.use(express.json()); // Allows reading JSON data from requests
+app.use(cors());
+app.use(express.json());
 
-// Health check - test if server is running
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
@@ -17,17 +15,16 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Import routes
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
-// const quotationRoutes = require("./routes/quotations");
-// const orderRoutes = require("./routes/orders");
+const quotationRoutes = require("./routes/quotations");
+const orderRoutes = require("./routes/orders");
 
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-// app.use("/api/quotations", quotationRoutes);
-// app.use("/api/orders", orderRoutes);
+app.use("/api/quotations", quotationRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Error handling - catches any errors
 app.use((err, req, res, next) => {

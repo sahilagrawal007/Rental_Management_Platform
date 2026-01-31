@@ -1,13 +1,3 @@
-// utils/priceCalculator.js
-// This calculates rental price based on duration
-
-/**
- * Calculate rental price based on product pricing and rental duration
- * @param {Object} product - Product with pricing info
- * @param {Date} startDate - Rental start date
- * @param {Date} endDate - Rental end date
- * @returns {Object} - Price, duration breakdown, pricing type
- */
 function calculateRentalPrice(product, startDate, endDate) {
   const start = new Date(startDate);
   const end = new Date(endDate);
