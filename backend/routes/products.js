@@ -185,7 +185,7 @@ router.get(
 
 router.post("/", authMiddleware, checkRole("VENDOR", "ADMIN"), async (req, res) => {
   try {
-    const { name, description, quantityOnHand, pricePerHour, pricePerDay, pricePerWeek, imageUrl } =
+    const { name, description, quantityOnHand, pricePerHour, pricePerDay, pricePerWeek, imageUrl, status } =
       req.body;
 
     if (!name || !quantityOnHand) {
@@ -210,7 +210,7 @@ router.post("/", authMiddleware, checkRole("VENDOR", "ADMIN"), async (req, res) 
         pricePerDay: pricePerDay ? parseFloat(pricePerDay) : null,
         pricePerWeek: pricePerWeek ? parseFloat(pricePerWeek) : null,
         imageUrl,
-        isPublished: false,
+        isPublished: status === "PUBLISHED",
       },
     });
 

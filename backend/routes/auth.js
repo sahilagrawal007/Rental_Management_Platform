@@ -11,10 +11,15 @@ router.post("/signup", async (req, res) => {
   try {
     const { email, password, name, companyName, gstin, role } = req.body;
 
-    if (!email || !password || !name || !gstin) {
+    if (!email || !password || !name) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Validate role-specific fields
+    if (role === "VENDOR" && !gstin) {
+      return res.status(400).json({ error: "GSTIN is required for vendors" });
+    }
+    
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -37,11 +42,9 @@ router.post("/signup", async (req, res) => {
     });
 
     // Create login token
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     res.status(201).json({
       user: {

@@ -1,4 +1,3 @@
-// routes/quotations.js
 // Shopping cart functionality - customers add products before confirming order
 
 const express = require("express");
@@ -44,10 +43,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-/**
- * GET /api/quotations/:id
- * Get single quotation with all details
- */
+
 router.get("/:id", authMiddleware, async (req, res) => {
   try {
     const quotation = await prisma.quotation.findUnique({
@@ -120,14 +116,12 @@ router.post("/:id/items", authMiddleware, checkRole("CUSTOMER"), async (req, res
     const quotationId = req.params.id;
     const { productId, quantity, rentalStart, rentalEnd } = req.body;
 
-    // Validate inputs
     if (!productId || !quantity || !rentalStart || !rentalEnd) {
       return res.status(400).json({
         error: "Missing required fields: productId, quantity, rentalStart, rentalEnd",
       });
     }
 
-    // Check quotation exists and belongs to user
     const quotation = await prisma.quotation.findUnique({
       where: { id: quotationId },
     });
@@ -144,7 +138,6 @@ router.post("/:id/items", authMiddleware, checkRole("CUSTOMER"), async (req, res
       return res.status(400).json({ error: "Cannot modify confirmed quotation" });
     }
 
-    // Check product availability
     const availability = await checkProductAvailability(
       productId,
       rentalStart,
