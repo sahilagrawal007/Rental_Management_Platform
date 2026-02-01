@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/common/Navbar';
 import Footer from '../../components/common/Footer';
 import ProductCard from '../../components/products/ProductCard';
@@ -24,8 +24,10 @@ const steps = [
 ];
 
 export default function HomePage() {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -40,6 +42,15 @@ export default function HomePage() {
         };
         fetchProducts();
     }, []);
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/explore?search=${encodeURIComponent(searchQuery.trim())}`);
+        } else {
+            navigate('/explore');
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -69,24 +80,19 @@ export default function HomePage() {
                             </p>
 
                             {/* Search Bar */}
-                            <div className="flex bg-white rounded-lg p-1.5 max-w-xl">
+                            <form onSubmit={handleSearch} className="flex bg-white rounded-lg p-1.5 max-w-xl">
                                 <input
                                     type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search products to rent..."
-                                    className="flex-1 px-4 py-3 text-gray-900 placeholder:text-gray-400 outline-none"
+                                    className="flex-1 px-4 py-3 text-gray-900 placeholder:text-gray-400 outline-none rounded-l-md"
                                 />
-                                <button className="btn-primary rounded-md px-6">
+                                <button type="submit" className="btn-primary rounded-md px-6">
                                     Search
                                 </button>
-                            </div>
+                            </form>
                         </div>
-                    </div>
-
-                    {/* Pagination dots */}
-                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-                        <span className="w-8 h-1.5 bg-white rounded-full"></span>
-                        <span className="w-1.5 h-1.5 bg-white/40 rounded-full"></span>
-                        <span className="w-1.5 h-1.5 bg-white/40 rounded-full"></span>
                     </div>
                 </section>
 

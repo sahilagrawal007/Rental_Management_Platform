@@ -218,17 +218,18 @@ export default function VendorQuotations() {
                                                 <div className="bg-gray-50 rounded-xl p-4">
                                                     <h4 className="text-sm font-medium text-gray-500 mb-2">Quote Summary</h4>
                                                     <div className="space-y-1 text-sm">
+                                                        {/* For pending quotes, totalAmount already includes GST */}
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600">Subtotal</span>
-                                                            <span className="font-medium">₹{quote.totalAmount?.toLocaleString()}</span>
+                                                            <span className="font-medium">₹{Math.round((quote.totalAmount || 0) / 1.18).toLocaleString()}</span>
                                                         </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600">GST (18%)</span>
-                                                            <span className="font-medium">₹{Math.round(quote.totalAmount * 0.18).toLocaleString()}</span>
+                                                            <span className="font-medium">₹{Math.round((quote.totalAmount || 0) - (quote.totalAmount || 0) / 1.18).toLocaleString()}</span>
                                                         </div>
                                                         <div className="flex justify-between pt-1 border-t border-gray-200">
                                                             <span className="font-semibold text-gray-900">Total</span>
-                                                            <span className="font-bold text-gray-900">₹{Math.round(quote.totalAmount * 1.18).toLocaleString()}</span>
+                                                            <span className="font-bold text-gray-900">₹{quote.totalAmount?.toLocaleString()}</span>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -86,6 +86,8 @@ export const invoiceAPI = {
     getById: (id) => api.get(`/invoices/${id}`),
     makePayment: (id, data) => api.post(`/invoices/${id}/payments`, data),
     getPayments: (id) => api.get(`/invoices/${id}/payments`),
+    send: (id) => api.patch(`/invoices/${id}/send`),
+    downloadPdf: (id) => `${API_URL}/invoices/${id}/pdf`,
 };
 
 export default api;

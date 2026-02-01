@@ -85,6 +85,7 @@ export default function Navbar() {
                                                 <Link to="/vendor/products" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">My Products</Link>
                                                 <Link to="/vendor/quotations" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">📨 Quotations</Link>
                                                 <Link to="/vendor/orders" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">Orders</Link>
+                                                <Link to="/vendor/invoices" className="block px-4 py-2 text-gray-700 hover:bg-gray-50">💰 Invoices</Link>
                                             </>
                                         )}
                                         {role === 'CUSTOMER' && (

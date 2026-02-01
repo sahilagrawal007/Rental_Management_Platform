@@ -19,12 +19,14 @@ const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
 const quotationRoutes = require("./routes/quotations");
 const orderRoutes = require("./routes/orders");
+const invoiceRoutes = require("./routes/invoices");
 
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/quotations", quotationRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/invoices", invoiceRoutes);
 
 // Error handling - catches any errors
 app.use((err, req, res, next) => {

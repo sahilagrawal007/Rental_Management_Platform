@@ -16,6 +16,7 @@ import VendorDashboard from './pages/vendor/VendorDashboard';
 import VendorProducts from './pages/vendor/VendorProducts';
 import VendorOrders from './pages/vendor/VendorOrders';
 import VendorQuotations from './pages/vendor/VendorQuotations';
+import VendorInvoices from './pages/vendor/VendorInvoices';
 import QuotationsPage from './pages/customer/QuotationsPage';
 
 // Protected Route wrapper
@@ -100,6 +101,11 @@ export default function App() {
                 <Route path="/vendor/quotations" element={
                     <ProtectedRoute allowedRoles={['VENDOR']}>
                         <VendorQuotations />
+                    </ProtectedRoute>
+                } />
+                <Route path="/vendor/invoices" element={
+                    <ProtectedRoute allowedRoles={['VENDOR']}>
+                        <VendorInvoices />
                     </ProtectedRoute>
                 } />
 

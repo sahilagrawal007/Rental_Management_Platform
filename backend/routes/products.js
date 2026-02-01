@@ -10,6 +10,29 @@ const {
 
 const prisma = new PrismaClient();
 
+/**
+ * Get all products created by logged-in vendor
+ * NOTE: This route MUST be before /:id to avoid matching "vendor" as an id
+ */
+router.get(
+  "/vendor/my-products",
+  authMiddleware,
+  checkRole("VENDOR", "ADMIN"),
+  async (req, res) => {
+    try {
+      const products = await prisma.product.findMany({
+        where: { vendorId: req.userId },
+        orderBy: { createdAt: "desc" },
+      });
+
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching vendor products:", error);
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  },
+);
+
 // Get all published products
 
 router.get("/", async (req, res) => {
@@ -157,29 +180,6 @@ router.get("/:id/reservations", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch reservations" });
   }
 });
-
-/**
- * Get all products created by logged-in vendor
- */
-router.get(
-  "/vendor/my-products",
-  authMiddleware,
-  checkRole("VENDOR", "ADMIN"),
-  async (req, res) => {
-    try {
-      const products = await prisma.product.findMany({
-        where: { vendorId: req.userId },
-        orderBy: { createdAt: "desc" },
-      });
-
-      res.json(products);
-    } catch (error) {
-      console.error("Error fetching vendor products:", error);
-      res.status(500).json({ error: "Failed to fetch products" });
-    }
-  },
-);
-
 
 // Create new rental product (Vendor only)
 

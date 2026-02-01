@@ -283,18 +283,40 @@ export default function QuotationsPage() {
                                                 {/* Price Breakdown */}
                                                 <div className="mt-4 pt-4 border-t border-gray-100 bg-gray-50 rounded-xl p-4">
                                                     <div className="space-y-2">
-                                                        <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-600">Subtotal</span>
-                                                            <span className="font-medium text-gray-900">₹{quote.totalAmount?.toLocaleString()}</span>
-                                                        </div>
-                                                        <div className="flex justify-between text-sm text-green-600">
-                                                            <span>GST (18%)</span>
-                                                            <span className="font-medium">₹{Math.round((quote.totalAmount || 0) * 0.18).toLocaleString()}</span>
-                                                        </div>
-                                                        <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-200">
-                                                            <span>Total Amount</span>
-                                                            <span className="text-lg">₹{Math.round((quote.totalAmount || 0) * 1.18).toLocaleString()}</span>
-                                                        </div>
+                                                        {/* For DRAFT: totalAmount is subtotal (without GST)
+                                                            For SENT/others: totalAmount is already GST-inclusive */}
+                                                        {quote.status === 'DRAFT' ? (
+                                                            <>
+                                                                <div className="flex justify-between text-sm">
+                                                                    <span className="text-gray-600">Subtotal</span>
+                                                                    <span className="font-medium text-gray-900">₹{quote.totalAmount?.toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-sm text-green-600">
+                                                                    <span>GST (18%)</span>
+                                                                    <span className="font-medium">₹{Math.round((quote.totalAmount || 0) * 0.18).toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-200">
+                                                                    <span>Total Amount</span>
+                                                                    <span className="text-lg">₹{Math.round((quote.totalAmount || 0) * 1.18).toLocaleString()}</span>
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {/* For submitted quotes, totalAmount already includes GST */}
+                                                                <div className="flex justify-between text-sm">
+                                                                    <span className="text-gray-600">Subtotal</span>
+                                                                    <span className="font-medium text-gray-900">₹{Math.round((quote.totalAmount || 0) / 1.18).toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between text-sm text-green-600">
+                                                                    <span>GST (18%)</span>
+                                                                    <span className="font-medium">₹{Math.round((quote.totalAmount || 0) - (quote.totalAmount || 0) / 1.18).toLocaleString()}</span>
+                                                                </div>
+                                                                <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-200">
+                                                                    <span>Total Amount</span>
+                                                                    <span className="text-lg">₹{quote.totalAmount?.toLocaleString()}</span>
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
