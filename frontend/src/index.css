@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary: #e86a45;
+    --primary-light: #f47e5c;
+    --dark: #1a1a1a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Buttons */
+.btn-primary {
+    @apply bg-[#e86a45] hover:bg-[#d4502d] text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 inline-flex items-center gap-2;
+}
+
+.btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-900 font-medium px-6 py-3 rounded-lg border border-gray-200 transition-all duration-200 inline-flex items-center gap-2;
+}
+
+/* Inputs */
+.input-field {
+    @apply w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e86a45] focus:border-transparent transition-all duration-200 text-gray-900 placeholder:text-gray-400;
+}
+
+.input-label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+}
+
+/* Cards */
+.product-card {
+    @apply bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300;
+}
+
+/* Category Pills */
+.category-pill {
+    @apply inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-gray-200 bg-white hover:border-gray-300 text-gray-700 text-sm font-medium transition-all cursor-pointer;
+}
+
+.category-pill.active {
+    @apply bg-[#e86a45] text-white border-[#e86a45];
+}
+
+/* Badges */
+.badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-new {
+    @apply bg-[#e86a45] text-white;
+}
+
+.badge-category {
+    @apply bg-gray-100 text-gray-700;
+}
+
+/* Status badges */
+.status-confirmed {
+    @apply bg-green-100 text-green-700;
+}
+
+.status-pending {
+    @apply bg-yellow-100 text-yellow-700;
+}
+
+.status-cancelled {
+    @apply bg-red-100 text-red-700;
+}
+
+.status-completed {
+    @apply bg-blue-100 text-blue-700;
+}
+
+/* Loading spinner */
+.spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-[#e86a45];
+}
